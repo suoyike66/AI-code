@@ -11,7 +11,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.5.13-SNAPSHOT</version>
+        <version>3.5.2</version>
         <relativePath/> <!-- 从仓库查找父项目，而非相对路径 -->
     </parent>
 
@@ -85,6 +85,24 @@
             <artifactId>spring-boot-starter-aop</artifactId>
         </dependency>
 
+        <!-- MyBatis-Flex 集成 Spring Boot 3.0 -->
+        <dependency>
+            <groupId>com.mybatis-flex</groupId>
+            <artifactId>mybatis-flex-spring-boot3-starter</artifactId>
+            <version>1.11.6</version>
+        </dependency>
+        <!-- 代码生成模块 -->
+        <dependency>
+            <groupId>com.mybatis-flex</groupId>
+            <artifactId>mybatis-flex-codegen</artifactId>
+            <version>1.11.6</version>
+        </dependency>
+        <!-- 数据库连接池 -->
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+        </dependency>
+
 
 
         <!-- Spring Boot 测试启动器 -->
@@ -127,25 +145,4 @@
             </plugin>
         </plugins>
     </build>
-
-    <!-- 使用阿里云的 Maven 仓库源，提升包下载速度 -->
-    <repositories>
-        <repository>
-            <id>aliyunmaven</id>
-            <name>aliyun</name>
-            <url>https://maven.aliyun.com/repository/public</url>
-        </repository>
-    </repositories>
-
-    <pluginRepositories>
-        <pluginRepository>
-            <id>spring-snapshots</id>
-            <name>Spring Snapshots</name>
-            <url>https://repo.spring.io/snapshot</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-        </pluginRepository>
-    </pluginRepositories>
-
 </project>

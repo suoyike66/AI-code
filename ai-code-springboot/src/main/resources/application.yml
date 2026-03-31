@@ -1,6 +1,13 @@
 spring:
   application:
     name: ai-code-springboot
+  # mysql
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3307/ai_code
+    username: root
+    password: 123456
+
 server:
   port: 8081
   servlet:
