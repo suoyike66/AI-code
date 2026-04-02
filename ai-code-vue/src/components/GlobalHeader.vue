@@ -5,7 +5,7 @@
       <a-col flex="200px">
         <RouterLink to="/">
           <div class="header-left">
-            <img class="logo" src="@/assets/logo.svg" alt="Logo" />
+            <img class="logo" src="@/assets/logo.png" alt="Logo" />
             <h1 class="site-title">蓑衣客应用生成</h1>
           </div>
         </RouterLink>
@@ -15,7 +15,7 @@
         <a-menu
           v-model:selectedKeys="selectedKeys"
           mode="horizontal"
-          :items="filteredMenuItems"
+          :items="menuItems"
           @click="handleMenuClick"
         />
       </a-col>
@@ -50,79 +50,73 @@
 <script setup lang="ts">
 import { computed, h, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import type { MenuProps } from 'ant-design-vue'
+import { type MenuProps, message } from 'ant-design-vue'
 import { useLoginUserStore } from '@/stores/loginUser.ts'
-import { LogoutOutlined } from '@ant-design/icons-vue'
-import { message } from 'ant-design-vue'
 import { userLogout } from '@/api/userController.ts'
-import checkAccess from '@/access/checkAccess'
-import ACCESS_ENUM from '@/access/accessEnum'
-
-interface MenuItem {
-  key: string
-  label: string
-  title: string
-  access?: string
-}
+import { LogoutOutlined, HomeOutlined } from '@ant-design/icons-vue'
 
 const loginUserStore = useLoginUserStore()
-
 const router = useRouter()
+// 当前选中菜单
 const selectedKeys = ref<string[]>(['/'])
-
-router.afterEach((to) => {
+// 监听路由变化，更新当前选中菜单
+router.afterEach((to, from, next) => {
   selectedKeys.value = [to.path]
 })
 
-const menus: MenuItem[] = [
+// 菜单配置项
+const originItems = [
   {
     key: '/',
-    label: '首页',
-    title: '首页',
+    icon: () => h(HomeOutlined),
+    label: '主页',
+    title: '主页',
   },
   {
-    key: '/about',
-    label: '关于',
-    title: '关于我们',
-  },
-  {
-    key: '/admin/usermanage',
+    key: '/admin/userManage',
     label: '用户管理',
     title: '用户管理',
-    access: ACCESS_ENUM.ADMIN,
+  },
+  {
+    key: '/admin/appManage',
+    label: '应用管理',
+    title: '应用管理',
   },
   {
     key: 'others',
-    label: '我的个人博客',
-    title: '我的个人博客',
+    label: h('a', { href: 'https://www.suoyikehan.com', target: '_blank' }, '个人博客'),
+    title: '个人博客',
   },
 ]
 
-const filteredMenuItems = computed(() => {
-  return menus
-    .filter((menu) => {
-      return checkAccess(loginUserStore.loginUser, menu.access)
-    })
-    .map((menu) => {
-      if (menu.key === 'others') {
-        return {
-          key: menu.key,
-          label: h('a', { href: 'https://www.suoyikehan.com', target: '_blank' }, menu.label),
-          title: menu.title,
-        }
+// 过滤菜单项
+const filterMenus = (menus = [] as MenuProps['items']) => {
+  return menus?.filter((menu) => {
+    const menuKey = menu?.key as string
+    if (menuKey?.startsWith('/admin')) {
+      const loginUser = loginUserStore.loginUser
+      if (!loginUser || loginUser.userRole !== 'admin') {
+        return false
       }
-      return menu
-    })
-})
+    }
+    return true
+  })
+}
 
+// 展示在菜单的路由数组
+const menuItems = computed<MenuProps['items']>(() => filterMenus(originItems))
+
+// 处理菜单点击
 const handleMenuClick: MenuProps['onClick'] = (e) => {
   const key = e.key as string
   selectedKeys.value = [key]
+  // 跳转到对应页面
   if (key.startsWith('/')) {
     router.push(key)
   }
 }
 
+// 退出登录
 const doLogout = async () => {
   const res = await userLogout()
   if (res.data.code === 0) {

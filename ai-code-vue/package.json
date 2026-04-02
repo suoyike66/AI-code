@@ -16,9 +16,12 @@
     "format": "prettier --write --experimental-cli src/"
   },
   "dependencies": {
+    "@types/markdown-it": "^14.1.2",
     "ant-design-vue": "^4.2.6",
     "axios": "^1.14.0",
     "dayjs": "^1.11.20",
+    "highlight.js": "^11.10.0",
+    "markdown-it": "^14.1.1",
     "pinia": "^3.0.4",
     "vue": "^3.5.30",
     "vue-router": "^5.0.3"

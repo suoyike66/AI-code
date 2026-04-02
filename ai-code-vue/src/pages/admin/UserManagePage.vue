@@ -43,11 +43,10 @@
   </div>
 </template>
 <script lang="ts" setup>
+import { computed, onMounted, reactive, ref } from 'vue'
 import { deleteUser, listUserVoByPage } from '@/api/userController'
 import { message } from 'ant-design-vue'
 import dayjs from 'dayjs'
-import { computed, onMounted, reactive, ref } from 'vue'
-import type { TableProps } from 'ant-design-vue'
 
 const columns = [
   {
@@ -114,7 +113,7 @@ const pagination = computed(() => {
   }
 })
 
-const doTableChange: TableProps['onChange'] = (page) => {
+const doTableChange = (page: { current: number; pageSize: number }) => {
   searchParams.pageNum = page.current
   searchParams.pageSize = page.pageSize
   fetchData()
@@ -142,3 +141,11 @@ onMounted(() => {
   fetchData()
 })
 </script>
+
+<style scoped>
+#userManagePage {
+  padding: 24px;
+  background: white;
+  margin-top: 16px;
+}
+</style>
