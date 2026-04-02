@@ -11,7 +11,7 @@ import java.util.Map;
 public class MyBatisCodeGenerator {
 
     // 需要生成的表名
-    private static final String[] TABLE_NAMES = {"app"};
+    private static final String[] TABLE_NAMES = {"chat_history"};
 
     public static void main(String[] args) {
         // 获取数据源信息
@@ -70,7 +70,7 @@ public class MyBatisCodeGenerator {
         // 设置生成时间和字符串为空，避免多余的代码改动
         globalConfig.getJavadocConfig()
                 .setAuthor("<a href=\"https://github.com/suoyike66\">蓑衣客</a>")
-                .setSince("2026-03-30");
+                .setSince("2026-04-02");
         return globalConfig;
     }
 }
