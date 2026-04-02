@@ -6,6 +6,7 @@ import com.mybatisflex.core.service.IService;
 import com.suoyike.aicodespringboot.model.dto.chathistory.ChatHistoryQueryRequest;
 import com.suoyike.aicodespringboot.model.entiey.ChatHistory;
 import com.suoyike.aicodespringboot.model.entiey.User;
+import dev.langchain4j.memory.chat.MessageWindowChatMemory;
 
 import java.time.LocalDateTime;
 
@@ -35,6 +36,16 @@ public interface ChatHistoryService extends IService<ChatHistory> {
      * @return 是否成功
      */
     boolean deleteByAppId(Long appId);
+
+    /**
+     * 加载应用对话历史到内存
+     *
+     * @param appId           应用ID
+     * @param chatMemory      聊天内存
+     * @param maxCount        最大数量
+     * @return 加载成功的数量
+     */
+    int loadChatHistoryToMemory(Long appId, MessageWindowChatMemory chatMemory, int maxCount);
 
     /**
      * 获取查询条件
