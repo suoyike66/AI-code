@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
 import java.io.File;
+import java.util.Map;
 
 /**
  * AI 代码生成门面类，组合生成和保存功能
@@ -111,8 +112,20 @@ public class AiCodeGeneratorFacade {
                         sink.next(JSONUtil.toJsonStr(aiResponseMessage));
                     })
                     .onPartialToolExecutionRequest((index, toolExecutionRequest) -> {
-                        ToolRequestMessage toolRequestMessage = new ToolRequestMessage(toolExecutionRequest);
-                        sink.next(JSONUtil.toJsonStr(toolRequestMessage));
+                        try {
+                            // 尝试解析工具参数，如果失败则跳过
+                            ToolRequestMessage toolRequestMessage = new ToolRequestMessage(toolExecutionRequest);
+                            sink.next(JSONUtil.toJsonStr(toolRequestMessage));
+                        } catch (Exception e) {
+                            log.warn("工具调用请求格式错误，跳过：{}", e.getMessage());
+                            // 发送一个简化的消息，避免客户端解析失败
+                            Map<String, String> simpleMessage = Map.of(
+                                "type", "tool_request",
+                                "name", toolExecutionRequest.name(),
+                                "warning", "参数解析失败"
+                            );
+                            sink.next(JSONUtil.toJsonStr(simpleMessage));
+                        }
                     })
                     .onToolExecuted((ToolExecution toolExecution) -> {
                         ToolExecutedMessage toolExecutedMessage = new ToolExecutedMessage(toolExecution);
@@ -122,7 +135,15 @@ public class AiCodeGeneratorFacade {
                         sink.complete();
                     })
                     .onError((Throwable error) -> {
-                        error.printStackTrace();
+                        log.error("流式处理过程中发生错误：{}", error.getMessage(), error);
+                        // 如果是 JSON 解析错误，发送友好的错误消息
+                        if (error instanceof com.fasterxml.jackson.core.JsonParseException) {
+                            Map<String, String> errorMessage = Map.of(
+                                "type", "error",
+                                "message", "AI 返回的数据格式不正确，请重试"
+                            );
+                            sink.next(JSONUtil.toJsonStr(errorMessage));
+                        }
                         sink.error(error);
                     })
                     .start();
