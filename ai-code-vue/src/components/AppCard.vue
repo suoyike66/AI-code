@@ -1,7 +1,7 @@
 <template>
   <div class="app-card" :class="{ 'app-card--featured': featured }">
     <div class="app-preview">
-      <img v-if="app.cover" :src="app.cover" :alt="app.appName" />
+      <img v-if="coverUrl" :src="coverUrl" :alt="app.appName" />
       <div v-else class="app-placeholder">
         <span>🤖</span>
       </div>
@@ -29,6 +29,8 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
+
 interface Props {
   app: API.AppVO
   featured?: boolean
@@ -44,6 +46,19 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const emit = defineEmits<Emits>()
+
+const coverUrl = computed(() => {
+  if (!props.app.cover) return ''
+  
+  // 检查是否是腾讯云 COS 控制台地址
+  if (props.app.cover.includes('console.cloud.tencent.com')) {
+    // 转换为实际的 COS 存储桶地址
+    return props.app.cover
+      .replace('https://console.cloud.tencent.com/cos/bucket/', 'https://suoyike66-aicode-1389935923.cos.ap-shanghai.myqcloud.com/')
+  }
+  
+  return props.app.cover
+})
 
 const handleViewChat = () => {
   emit('view-chat', props.app.id)

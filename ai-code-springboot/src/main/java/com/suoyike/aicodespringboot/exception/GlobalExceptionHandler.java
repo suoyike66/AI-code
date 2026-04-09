@@ -8,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
 import java.util.Map;
@@ -43,8 +42,8 @@ public class GlobalExceptionHandler {
         if (request instanceof org.springframework.web.context.request.NativeWebRequest) {
             org.springframework.web.context.request.NativeWebRequest nativeWebRequest = 
                 (org.springframework.web.context.request.NativeWebRequest) request;
-            javax.servlet.http.HttpServletResponse response = 
-                nativeWebRequest.getNativeResponse(javax.servlet.http.HttpServletResponse.class);
+            jakarta.servlet.http.HttpServletResponse response = 
+                nativeWebRequest.getNativeResponse(jakarta.servlet.http.HttpServletResponse.class);
             
             if (response != null && !response.isCommitted()) {
                 response.setContentType(MediaType.TEXT_EVENT_STREAM_VALUE);
