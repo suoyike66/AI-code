@@ -2,7 +2,7 @@ package com.suoyike.aicodespringboot.ai;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
-import com.suoyike.aicodespringboot.ai.tools.FileWriteTool;
+import com.suoyike.aicodespringboot.ai.tools.*;
 import com.suoyike.aicodespringboot.exception.BusinessException;
 import com.suoyike.aicodespringboot.exception.ErrorCode;
 import com.suoyike.aicodespringboot.model.enums.CodeGenTypeEnum;
@@ -40,6 +40,9 @@ public class AiCodeGeneratorServiceFactory {
 
     @Resource
     private ChatHistoryService chatHistoryService;
+
+    @Resource
+    private ToolManager toolManager;
 
     /**
      * AI 服务实例缓存
@@ -95,7 +98,7 @@ public class AiCodeGeneratorServiceFactory {
             case VUE_PROJECT -> AiServices.builder(AiCodeGeneratorService.class)
                     .streamingChatModel(reasoningStreamingChatModel)
                     .chatMemoryProvider(memoryId -> chatMemory)
-                    .tools(new FileWriteTool())
+                    .tools(toolManager.getAllTools())
                     .hallucinatedToolNameStrategy(toolExecutionRequest -> ToolExecutionResultMessage.from(
                             toolExecutionRequest, "Error: there is no tool called " + toolExecutionRequest.name()
                     ))
@@ -110,8 +113,6 @@ public class AiCodeGeneratorServiceFactory {
                     "不支持的代码生成类型: " + codeGenType.getValue());
         };
     }
-
-
 
 }
 
