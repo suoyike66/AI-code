@@ -1,0 +1,83 @@
+package com.suoyike.aicodespringboot.langgraph4j.tools;
+
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.http.HttpRequest;
+import cn.hutool.http.HttpResponse;
+import cn.hutool.json.JSONArray;
+import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
+import com.suoyike.aicodespringboot.langgraph4j.model.ImageResource;
+import com.suoyike.aicodespringboot.langgraph4j.model.enums.ImageCategoryEnum;
+import dev.langchain4j.agent.tool.P;
+import dev.langchain4j.agent.tool.Tool;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * 图片搜集工具（插画图片）
+* */
+@Slf4j
+@Component
+public class UndrawIllustrationTool {
+
+    private static final String UNDRAW_API_URL = "https://undraw.co/_next/data/rxbI0cNBbVhP70ybALHAo/search/%s.json?term=%s";
+
+    @Tool("搜索插画图片，用于网站美化和装饰")
+    public List<ImageResource> searchIllustrations(@P("搜索关键词") String query) {
+        List<ImageResource> imageList = new ArrayList<>();
+        int searchCount = 12;
+        String apiUrl = String.format(UNDRAW_API_URL, query, query);
+        
+        log.info("开始搜索插画，关键词: {}, API URL: {}", query, apiUrl);
+
+        // 使用 try-with-resources 自动释放 HTTP 资源
+        try (HttpResponse response = HttpRequest.get(apiUrl).timeout(10000).execute()) {
+            if (!response.isOk()) {
+                log.warn("搜索插画 API 返回错误状态码: {}, 关键词: {}", response.getStatus(), query);
+                return imageList;
+            }
+            
+            String responseBody = response.body();
+            log.debug("API 响应内容: {}", responseBody);
+            
+            JSONObject result = JSONUtil.parseObj(responseBody);
+            JSONObject pageProps = result.getJSONObject("pageProps");
+            if (pageProps == null) {
+                log.warn("API 响应中未找到 pageProps，关键词: {}", query);
+                return imageList;
+            }
+            
+            JSONArray initialResults = pageProps.getJSONArray("initialResults");
+            if (initialResults == null || initialResults.isEmpty()) {
+                log.info("未搜索到插画结果，关键词: {}", query);
+                return imageList;
+            }
+            
+            log.info("搜索到 {} 张插画，关键词: {}", initialResults.size(), query);
+            
+            int actualCount = Math.min(searchCount, initialResults.size());
+            for (int i = 0; i < actualCount; i++) {
+                JSONObject illustration = initialResults.getJSONObject(i);
+                String title = illustration.getStr("title", "插画");
+                String media = illustration.getStr("media", "");
+                if (StrUtil.isNotBlank(media)) {
+                    imageList.add(ImageResource.builder()
+                            .category(ImageCategoryEnum.ILLUSTRATION)
+                            .description(title)
+                            .url(media)
+                            .build());
+                } else {
+                    log.debug("插画缺少 media 字段，跳过: {}", title);
+                }
+            }
+            
+            log.info("成功解析 {} 张有效插画", imageList.size());
+        } catch (Exception e) {
+            log.error("搜索插画失败，关键词: {}, 错误: {}", query, e.getMessage(), e);
+        }
+        return imageList;
+    }
+}
