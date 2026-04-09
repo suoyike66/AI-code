@@ -1,5 +1,6 @@
 package com.suoyike.aicodespringboot.langgraph4j.state;
 
+import com.suoyike.aicodespringboot.langgraph4j.model.ImageCollectionPlan;
 import com.suoyike.aicodespringboot.langgraph4j.model.ImageResource;
 import com.suoyike.aicodespringboot.langgraph4j.model.QualityResult;
 import com.suoyike.aicodespringboot.model.enums.CodeGenTypeEnum;
@@ -78,6 +79,20 @@ public class WorkflowContext implements Serializable {
      * 错误信息
      */
     private String errorMessage;
+
+    /**
+     * 图片收集计划
+     */
+    private ImageCollectionPlan imageCollectionPlan;
+
+    /**
+     * 并发图片收集的中间结果字段
+     */
+    private List<ImageResource> contentImages;
+    private List<ImageResource> illustrations;
+    private List<ImageResource> diagrams;
+    private List<ImageResource> logos;
+
 
     @Serial
     private static final long serialVersionUID = 1L;
