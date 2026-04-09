@@ -7,6 +7,7 @@ import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.spring.service.impl.ServiceImpl;
+import com.suoyike.aicodespringboot.ai.AiCodeGenTypeRoutingService;
 import com.suoyike.aicodespringboot.constant.AppConstant;
 import com.suoyike.aicodespringboot.core.AiCodeGeneratorFacade;
 import com.suoyike.aicodespringboot.core.builder.VueProjectBuilder;
@@ -15,6 +16,7 @@ import com.suoyike.aicodespringboot.exception.BusinessException;
 import com.suoyike.aicodespringboot.exception.ErrorCode;
 import com.suoyike.aicodespringboot.exception.ThrowUtils;
 import com.suoyike.aicodespringboot.mapper.AppMapper;
+import com.suoyike.aicodespringboot.model.dto.app.AppAddRequest;
 import com.suoyike.aicodespringboot.model.dto.app.AppQueryRequest;
 import com.suoyike.aicodespringboot.model.entiey.App;
 import com.suoyike.aicodespringboot.model.entiey.User;
@@ -24,6 +26,7 @@ import com.suoyike.aicodespringboot.model.vo.AppVO;
 import com.suoyike.aicodespringboot.model.vo.UserVO;
 import com.suoyike.aicodespringboot.service.AppService;
 import com.suoyike.aicodespringboot.service.ChatHistoryService;
+import com.suoyike.aicodespringboot.service.ProjectDownloadService;
 import com.suoyike.aicodespringboot.service.ScreenshotService;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -67,6 +70,12 @@ public class AppServiceImpl extends ServiceImpl<AppMapper, App>  implements AppS
     @Resource
     private ScreenshotService screenshotService;
 
+    @Resource
+    private ProjectDownloadService projectDownloadService;
+
+    @Resource
+    private AiCodeGenTypeRoutingService aiCodeGenTypeRoutingService;
+
     @Override
     public AppVO getAppVO(App app) {
         if (app == null) {
@@ -103,6 +112,26 @@ public class AppServiceImpl extends ServiceImpl<AppMapper, App>  implements AppS
         }).collect(Collectors.toList());
     }
 
+    @Override
+    public Long createApp(AppAddRequest appAddRequest, User loginUser) {
+        // 参数校验
+        String initPrompt = appAddRequest.getInitPrompt();
+        ThrowUtils.throwIf(StrUtil.isBlank(initPrompt), ErrorCode.PARAMS_ERROR, "初始化 prompt 不能为空");
+        // 构造入库对象
+        App app = new App();
+        BeanUtil.copyProperties(appAddRequest, app);
+        app.setUserId(loginUser.getId());
+        // 应用名称暂时为 initPrompt 前 12 位
+        app.setAppName(initPrompt.substring(0, Math.min(initPrompt.length(), 12)));
+        // 使用 AI 智能选择代码生成类型
+        CodeGenTypeEnum selectedCodeGenType = aiCodeGenTypeRoutingService.routeCodeGenType(initPrompt);
+        app.setCodeGenType(selectedCodeGenType.getValue());
+        // 插入数据库
+        boolean result = this.save(app);
+        ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR);
+        log.info("应用创建成功，ID: {}, 类型: {}", app.getId(), selectedCodeGenType.getValue());
+        return app.getId();
+    }
 
     @Override
     public QueryWrapper getQueryWrapper(AppQueryRequest appQueryRequest) {

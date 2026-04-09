@@ -2,6 +2,7 @@ package com.suoyike.aicodespringboot.service;
 
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.service.IService;
+import com.suoyike.aicodespringboot.model.dto.app.AppAddRequest;
 import com.suoyike.aicodespringboot.model.dto.app.AppQueryRequest;
 import com.suoyike.aicodespringboot.model.entiey.App;
 import com.suoyike.aicodespringboot.model.entiey.User;
@@ -36,6 +37,15 @@ public interface AppService extends IService<App> {
      * @return
      */
     List<AppVO> getAppVOList(List<App> appList);
+
+    /**
+     * 创建应用
+     *
+     * @param appAddRequest
+     * @param loginUser
+     * @return
+     */
+    Long createApp(AppAddRequest appAddRequest, User loginUser);
 
     /**
      * 构造应用查询条件
