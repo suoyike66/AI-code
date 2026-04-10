@@ -19,6 +19,8 @@ import com.suoyike.aicodespringboot.model.dto.app.*;
 import com.suoyike.aicodespringboot.model.entiey.User;
 import com.suoyike.aicodespringboot.model.enums.CodeGenTypeEnum;
 import com.suoyike.aicodespringboot.model.vo.AppVO;
+import com.suoyike.aicodespringboot.ratelimiter.annotation.RateLimit;
+import com.suoyike.aicodespringboot.ratelimiter.enums.RateLimitType;
 import com.suoyike.aicodespringboot.service.ProjectDownloadService;
 import com.suoyike.aicodespringboot.service.UserService;
 import jakarta.annotation.Resource;
@@ -69,6 +71,7 @@ public class AppController {
      * @return 生成结果流
      */
     @GetMapping(value = "/chat/gen/code", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    @RateLimit(limitType = RateLimitType.USER, rate = 5, rateInterval = 60, message = "AI 对话请求过于频繁，请稍后再试")
     public Flux<ServerSentEvent<String>> chatToGenCode(@RequestParam Long appId,
                                                        @RequestParam String message,
                                                        HttpServletRequest request) {
