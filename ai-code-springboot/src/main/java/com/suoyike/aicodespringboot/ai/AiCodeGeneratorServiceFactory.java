@@ -3,6 +3,7 @@ package com.suoyike.aicodespringboot.ai;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.suoyike.aicodespringboot.ai.guardrail.PromptSafetyInputGuardrail;
+import com.suoyike.aicodespringboot.ai.guardrail.RetryOutputGuardrail;
 import com.suoyike.aicodespringboot.ai.tools.*;
 import com.suoyike.aicodespringboot.exception.BusinessException;
 import com.suoyike.aicodespringboot.exception.ErrorCode;
@@ -100,10 +101,13 @@ public class AiCodeGeneratorServiceFactory {
                         .streamingChatModel(reasoningStreamingChatModel)
                         .chatMemoryProvider(memoryId -> chatMemory)
                         .tools(toolManager.getAllTools())
+                        // 处理工具调用幻觉问题
                         .hallucinatedToolNameStrategy(toolExecutionRequest -> ToolExecutionResultMessage.from(
                                 toolExecutionRequest, "Error: there is no tool called " + toolExecutionRequest.name()
                         ))
+                        .maxSequentialToolsInvocations(20) // 限制最大连续工具调用20次
                         .inputGuardrails(new PromptSafetyInputGuardrail())  // 添加输入护轨
+//                        .outputGuardrails(new RetryOutputGuardrail())   // 添加输出护轨，为了流式输出，这里不使用
                         .build();
             }
             case HTML, MULTI_FILE -> {
@@ -114,6 +118,7 @@ public class AiCodeGeneratorServiceFactory {
                         .streamingChatModel(openAiStreamingChatModel)
                         .chatMemory(chatMemory)
                         .inputGuardrails(new PromptSafetyInputGuardrail())  // 添加输入护轨
+//                        .outputGuardrails(new RetryOutputGuardrail())   // 添加输出护轨，为了流式输出，这里不使用
                         .build();
             }
             default -> throw new BusinessException(ErrorCode.SYSTEM_ERROR,
