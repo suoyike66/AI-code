@@ -33,6 +33,7 @@ import com.suoyike.aicodespringboot.service.ProjectDownloadService;
 import com.suoyike.aicodespringboot.service.ScreenshotService;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
@@ -54,6 +55,9 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class AppServiceImpl extends ServiceImpl<AppMapper, App>  implements AppService{
+
+    @Value("${code.deploy-host:http://localhost}")
+    private String deployHost;
 
     @Resource
     private UserServiceImpl userService;
