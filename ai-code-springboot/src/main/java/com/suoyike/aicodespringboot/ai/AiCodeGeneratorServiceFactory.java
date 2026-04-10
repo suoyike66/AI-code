@@ -2,6 +2,7 @@ package com.suoyike.aicodespringboot.ai;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
+import com.suoyike.aicodespringboot.ai.guardrail.PromptSafetyInputGuardrail;
 import com.suoyike.aicodespringboot.ai.tools.*;
 import com.suoyike.aicodespringboot.exception.BusinessException;
 import com.suoyike.aicodespringboot.exception.ErrorCode;
@@ -102,6 +103,7 @@ public class AiCodeGeneratorServiceFactory {
                         .hallucinatedToolNameStrategy(toolExecutionRequest -> ToolExecutionResultMessage.from(
                                 toolExecutionRequest, "Error: there is no tool called " + toolExecutionRequest.name()
                         ))
+                        .inputGuardrails(new PromptSafetyInputGuardrail())  // 添加输入护轨
                         .build();
             }
             case HTML, MULTI_FILE -> {
@@ -111,6 +113,7 @@ public class AiCodeGeneratorServiceFactory {
                         .chatModel(chatModel)
                         .streamingChatModel(openAiStreamingChatModel)
                         .chatMemory(chatMemory)
+                        .inputGuardrails(new PromptSafetyInputGuardrail())  // 添加输入护轨
                         .build();
             }
             default -> throw new BusinessException(ErrorCode.SYSTEM_ERROR,
