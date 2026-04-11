@@ -18,6 +18,7 @@
     <groupId>com.suoyike</groupId>
     <artifactId>ai-code-springboot</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
     <name>ai-code-springboot</name>
     <description>ai-code-springboot</description>
 
@@ -31,6 +32,8 @@
     <developers>
         <developer/>
     </developers>
+    <modules>
+    </modules>
 
     <!-- 源码管理信息（当前为空） -->
     <scm>
