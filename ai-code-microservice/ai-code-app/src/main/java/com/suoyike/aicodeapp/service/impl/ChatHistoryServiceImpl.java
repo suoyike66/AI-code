@@ -1,6 +1,8 @@
 package com.suoyike.aicodeapp.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.StrUtil;
+import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.spring.service.impl.ServiceImpl;
 import com.suoyike.aicodeapp.mapper.ChatHistoryMapper;
@@ -12,8 +14,10 @@ import com.suoyike.aicodecommon.exception.ThrowUtils;
 import com.suoyike.aicodemodel.model.dto.chathistory.ChatHistoryQueryRequest;
 import com.suoyike.aicodemodel.model.entity.App;
 import com.suoyike.aicodemodel.model.entity.ChatHistory;
+import com.suoyike.aicodemodel.model.entity.User;
 import com.suoyike.aicodemodel.model.enums.ChatHistoryMessageTypeEnum;
 import dev.langchain4j.data.message.AiMessage;
+import dev.langchain4j.data.message.UserMessage;
 import dev.langchain4j.memory.chat.MessageWindowChatMemory;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
