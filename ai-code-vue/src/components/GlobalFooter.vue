@@ -8,7 +8,7 @@
           rel="noopener noreferrer"
           class="author-link"
         >
-          编程导航原创项目 by 蓑衣客
+          零代码生成平台 by 蓑衣客
         </a>
       </p>
     </div>
