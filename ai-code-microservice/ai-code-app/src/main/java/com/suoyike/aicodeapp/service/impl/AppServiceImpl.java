@@ -31,6 +31,7 @@ import com.suoyike.aicodemodel.model.vo.AppVO;
 import com.suoyike.aicodemodel.model.vo.UserVO;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;

@@ -5,6 +5,7 @@ import com.suoyike.aicodemodel.model.entity.User;
 import com.suoyike.aicodemodel.model.vo.UserVO;
 import com.suoyike.aicodeuser.service.UserService;
 import jakarta.annotation.Resource;
+import org.apache.dubbo.config.annotation.DubboService;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -13,7 +14,7 @@ import java.util.List;
 /**
  * 内部服务实现类
  */
-//@DubboService
+@DubboService
 public class InnerUserServiceImpl implements InnerUserService {
 
     @Resource

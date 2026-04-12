@@ -6,6 +6,7 @@ import com.suoyike.aicodecommon.exception.ErrorCode;
 import com.suoyike.aicodecommon.exception.ThrowUtils;
 import com.suoyike.aicodecommon.manager.CosManager;
 import com.suoyike.aicodescreenshot.service.ScreenshotService;
+import com.suoyike.aicodescreenshot.utils.WebScreenshotUtils;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

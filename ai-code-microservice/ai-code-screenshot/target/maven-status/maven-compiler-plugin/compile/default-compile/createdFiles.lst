@@ -1,0 +1,5 @@
+com\suoyike\aicodescreenshot\utils\WebScreenshotUtils.class
+com\suoyike\aicodescreenshot\service\impl\InnerScreenshotServiceImpl.class
+com\suoyike\aicodescreenshot\service\impl\ScreenshotServiceImpl.class
+com\suoyike\aicodescreenshot\service\ScreenshotService.class
+com\suoyike\aicodescreenshot\AiCodeScreenshotApplication.class
