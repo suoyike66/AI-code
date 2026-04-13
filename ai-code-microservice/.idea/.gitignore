@@ -8,3 +8,95 @@
 /dataSources.local.xml
 # 基于编辑器的 HTTP 客户端请求
 /httpRequests/
+
+# ==================== IntelliJ IDEA ====================
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# ==================== Maven ====================
+target/
+*.jar
+*.war
+*.ear
+*.class
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+# ==================== Eclipse ====================
+.classpath
+.project
+.settings/
+bin/
+.metadata/
+
+# ==================== VS Code ====================
+.vscode/
+*.code-workspace
+
+# ==================== Windows ====================
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# ==================== macOS ====================
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# ==================== Linux ====================
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+
+# ==================== Logs ====================
+*.log
+logs/
+*.log.*
+
+# ==================== Temp Files ====================
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+
+# ==================== Package Files ====================
+*.zip
+*.tar.gz
+*.rar
+*.7z
+
+# ==================== Environment Variables ====================
+.env
+.env.local
+.env.*.local
+
+# ==================== Generated Sources ====================
+**/generated-sources/
+**/generated-test-sources/
+
+# ==================== Application Specific ====================
+# ai-code-app generated files
+ai-code-app/target/
+ai-code-app/*.jar
+
+# Other modules target directories
+ai-code-ai/target/
+ai-code-client/target/
+ai-code-common/target/
+ai-code-model/target/
+ai-code-screenshot/target/
+ai-code-user/target/
+
