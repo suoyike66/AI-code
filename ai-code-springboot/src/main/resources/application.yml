@@ -1,6 +1,9 @@
 spring:
   application:
     name: ai-code-springboot
+  # 允许 Bean 定义覆盖(解决 LangChain4j 自动配置冲突)
+  main:
+    allow-bean-definition-overriding: true
   # session 配置
   session:
     store-type: redis
